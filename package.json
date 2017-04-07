@@ -1,0 +1,17 @@
+{
+  "name": "autovelox-apis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fabs cleanz",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.3.0",
+    "morgan": "^1.8.1"
+  }
+}

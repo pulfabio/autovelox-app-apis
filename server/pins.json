@@ -1,0 +1,11 @@
+{
+  "data": [
+    { "id": 1, "type": "police", "latitude": 45.4087540, "longitude": 11.8822200, "date": "24/03/2017", "time": "09.31", "username": "miki01" },
+    { "id": 2, "type": "radar", "latitude": 45.3988250, "longitude": 11.8777850, "date": "12/02/2017", "time": "18.43", "username": "zupp456" },
+    { "id": 3, "type": "police", "latitude": 45.4174700, "longitude": 11.8562450, "date": "01/04/2017", "time": "12.11", "username": "jestermung" },
+    { "id": 4, "type": "alcohol", "latitude": 45.5576630, "longitude": 11.5422310, "date": "27/01/2017", "time": "02.34", "username": "cassinvania" },
+    { "id": 5, "type": "radar", "latitude": 45.3688950, "longitude": 11.7160770, "date": "03/04/2017", "time": "20.55", "username": "boriamaurizio" },
+    { "id": 6, "type": "alcohol", "latitude": 45.4786120, "longitude": 11.8457210, "date": "04/04/2017", "time": "11.29", "username": "vaghigiuseppe" },
+    { "id": 7, "type": "police", "latitude": 45.2391130, "longitude": 11.7497360, "date": "05/04/2017", "time": "16.14", "username": "bolzangermano" }
+  ]
+}

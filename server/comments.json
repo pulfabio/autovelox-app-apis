@@ -1,0 +1,16 @@
+{
+  "data": [
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a2994e"), "username": "miki01", "text": "Proprio dietro la curva" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a2994f"), "username": "zupp456", "text": "Leggermente naascosto" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a2994e"), "username": "scuccatomanuel", "text": "Alla fine del cavalcavia" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29951"), "username": "cassinvania", "text": "Bastardi!!!" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a2994f"), "username": "autelltanodavide", "text": "Difficile da vedere" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29952"), "username": "boriamaurizio", "text": "Facile" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29950"), "username": "jestermung", "text": "Davanti gruppo di alberi" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29951"), "username": "cassinvania", "text": "Stazione di servizio Eni" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29953"), "username": "vaghigiuseppe", "text": "Anti-ubriaconi!!!" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29951"), "username": "miki01", "text": "Attenzione avvinazzati!" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a2994f"), "username": "miki01", "text": "Carrrrammmbaaa!" },
+    { "pin_id": ObjectId("58e51c2aed6dbacd51a29954"), "username": "bolzangermano", "text": "La polizia si incazza!" },
+  ]
+}
