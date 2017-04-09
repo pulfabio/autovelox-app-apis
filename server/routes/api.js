@@ -132,30 +132,62 @@ router.use(function(req, res, next) {
 //Real get-pins route
 router.get('/get-pins', (req, res) => {
   mongo.connect(dbUrl, function(err, db) {
-    var latitude = req.query.latitude;
-    var longitude = req.query.longitude;
+    var latitude = parseFloat(req.query.latitude);
+    var longitude = parseFloat(req.query.longitude);
     var distance = req.query.distance;
-    console.log(latitude);
-    console.log(longitude);
 
     if (!distance) {
       distance = 0.0400;
     }
-    console.log(distance);
     if (err) throw err;
     db.collection("pins").find(
       {
-        "latitude":{$lt:latitude + distance},
-        "latitude":{$gt:latitude - distance},
-        "longitude":{$lt:longitude + distance},
-        "longitude":{$gt:longitude - distance}
+        $and: [
+          {"latitude":{$lt:latitude + distance, $gt:latitude - distance}},
+          //{"latitude":{$gt:latitude - distance}},
+          {"longitude":{$lt:longitude + distance, $gt:longitude - distance}}
+          //{"longitude":{$gt:longitude - distance}}
+        ]
+
       }
     ).toArray(function(err, results) {
       if (err) throw err;
+
+      //Calculate distance of each radar-pin from user
+      results = results.map(function(pin) {
+        pin.distance = calcDist(latitude, longitude, pin.latitude, pin.longitude);
+        return pin;
+      });
+
       res.send(results);
       db.close();
     })
   })
+
+  //Calculates distance in meters between two points,
+  //given the points latitudes and longitudes
+  //using ‘haversine’ formula
+  function calcDist(lat1, lon1, lat2, lon2) {
+
+    //toRad converts angles from degrees to radians
+    function toRad(x) {
+      return x * Math.PI / 180;
+    }
+
+    var R = 6371e3; // metres
+    var φ1 = toRad(lat1);
+    var φ2 = toRad(lat2);
+    var Δφ = toRad(lat2-lat1);
+    var Δλ = toRad(lon2-lon1);
+
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    var d = R * c;
+    return d;
+  }
 })
 
 //Real add-pin route
@@ -167,7 +199,7 @@ router.post('/add-pin', (req, res) => {
       longitude: req.body.longitude,
       type: req.body.type,
       date: req.body.date,
-      date: req.body.time,
+      time: req.body.time,
       username: req.body.username,
       distance: req.body.distance,
       speed: req.body.speed
@@ -235,156 +267,4 @@ router.post('/add-comment', (req, res) => {
 })
 
 module.exports = router;
-
-//Real Elettr Meter dashboard route
-// router.get('/meters/elettr', (req, res) => {
-//   mongo.connect(dbUrl, function(err, db) {
-//     if (err) throw err;
-//     db.collection("meters").aggregate([
-//       { $match: { tipo: "elettrico" } },
-//       { $group: { _id: "$livello", numero: { $sum: 1 } } },
-//       { $sort: { livello: 1 } }
-//     ]).toArray(function(err, results) {
-//       if (err) throw err;
-//       res.send(results);
-//       db.close();
-//     })
-//   })
-// })
-
-// //Real Gas Meter dashboard route
-// router.get('/meters/gas', (req, res) => {
-//   mongo.connect(dbUrl, function(err, db) {
-//     if (err) throw err;
-//     db.collection("meters").aggregate([
-//       { $match: { tipo: "gas" } },
-//       { $group: { _id: "$livello", numero: { $sum: 1 } } },
-//       { $sort: { livello: 1 } }
-//     ]).toArray(function(err, results) {
-//       if (err) throw err;
-//       res.send(results);
-//       db.close();
-//     })
-//   })
-// })
-
-// //Real meter details route
-// router.get('/meters/details/:livello', (req,res) => {
-//   var liv = req.params.livello;
-//   mongo.connect(dbUrl, function(err, db) {
-//     if (err) throw err;
-//     db.collection("meters").find({
-//       livello: liv
-//     }).toArray(function(err, docs) {
-//       if (err) throw err;
-//       res.send(docs);
-//       db.close();
-//     })
-//   })
-// })
-
-//AUTHENTICATION ROUTE - WITH DB - mongoose style
-// route to authenticate a user (POST http://localhost:3001/api/login)
-// router.post('/login', function(req, res) {
-
-//   //find the user
-//   User.findOne({
-//     name: req.body.name
-//   }, function(err, user) {
-
-//     if (err) throw err;
-
-//     if (!user) {
-//       res.json({ success: false, message: 'Authentication failed. User not found.' });
-//     } else if (user) {
-
-//       // check if password matches
-//       if (user.password != req.body.password) {
-//         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-//       } else {
-
-//         // if user is found and password is right
-//         // create a token
-//         var token = jwt.sign(user, superSecret/*app.get('superSecret')*/, {
-//           expiresIn: "24h" // expires in 24 hours
-//         });
-
-//         // return the information including token as JSON
-//         res.json({
-//           success: true,
-//           message: 'Enjoy your token!',
-//           token: token
-//         });
-//       }
-
-//     }
-
-//   });
-// });
-
-//MOCKED AUTHENTICATION ROUTE - WITH SiMPLE JSON FILE
-// router.post('/login', function(req, res) {
-//   var user;
-//   fs.readFile(path.join(__dirname, "/../users.json"), "utf8", function(err, data) {
-//     if (!err) {
-//       data = JSON.parse(data);
-//       for (var i = 0; i < data.data.length; i++) {
-//         var item = data.data[i];
-//         if (item.username === req.body.username) {
-//           user = item;
-//         }
-//       }
-//     } else {
-//       throw err;
-//     }
-//     if (!user) {
-//       res.json({ success: false, message: 'Authentication failed. User not found.' });
-//     } else if (user) {
-
-//       // check if password matches
-//       if (user.password != req.body.password) {
-//         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-//       } else {
-
-//         // if user is found and password is right
-//         // create a token
-//         var token = jwt.sign(user, superSecret/*app.get('superSecret')*/, {
-//           expiresIn: "24h" // expires in 24 hours
-//         });
-
-//         // return the information including token as JSON
-//         res.json({
-//           success: true,
-//           message: 'Enjoy your token!',
-//           auth_token: token
-//         });
-//       }
-
-//     }
-
-//   });
-// });
-
-// Mocked Meter dashboard route
-// router.get('/meters/main', (req, res) => {
-//   fs.readFile(path.join(__dirname, "../meters.js"), "utf8", function(err, data) {
-//     if (!err) {
-//       res.json(data);
-//     } else {
-//       throw err;
-//     }
-//   })
-
-// })
-
-// Mocked Meter details route
-// router.get('/meters/details', (req,res) => {
-//   fs.readFile(path.join(__dirname, "../details.js"), "utf8", function(err, data) {
-//     if (!err) {
-//       res.json(data);
-//     } else {
-//       throw err;
-//     }
-//   })
-// })
 
