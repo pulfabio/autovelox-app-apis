@@ -21,7 +21,6 @@ router.post('/login', function(req, res) {
     if (err) throw err;
     var username = req.body.username;
     var password = req.body.password;
-    console.log(username, password);
     db.collection("users").findOne({
       "username": username
     }, function(err, user) {
@@ -67,7 +66,6 @@ router.post('/login', function(req, res) {
         });
       }
       var user = {"username": username, "password": password};
-      console.log(user);
       db.collection("users").insert(
         user,
         function (err, doc) {
@@ -91,8 +89,6 @@ router.post('/login', function(req, res) {
 // route middleware to verify a token - implemented AFTER the authentication route
 //because we don't want to secure that, but before the get methods,
 //which need to be secured
-
-//TEMPORARILY DEACTIVATED
 
 router.use(function(req, res, next) {
   // check header or url parameters or post parameters for token
@@ -174,7 +170,7 @@ router.get('/get-pins', (req, res) => {
       return x * Math.PI / 180;
     }
 
-    var R = 6371e3; // metres
+    var R = 6371e3; // meters
     var φ1 = toRad(lat1);
     var φ2 = toRad(lat2);
     var Δφ = toRad(lat2-lat1);
@@ -188,6 +184,20 @@ router.get('/get-pins', (req, res) => {
     var d = R * c;
     return d;
   }
+})
+
+//Real get-user-pins route
+router.get('/get-user-pins', (req, res) => {
+  mongo.connect(dbUrl, function(err, db) {
+    if (err) throw err;
+    db.collection("pins").find(
+      {"username": req.query.username}
+    ).toArray(function(err, results) {
+      if (err) throw err;
+      res.send(results);
+      db.close();
+    })
+  })
 })
 
 //Real add-pin route
