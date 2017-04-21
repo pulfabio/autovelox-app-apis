@@ -248,7 +248,8 @@ router.get('/get-comments-pin', (req, res) => {
     var pin_id = req.query.pin_id;
     if (err) throw err;
     db.collection("comments").find(
-      {"pin_id": new ObjectId(pin_id) }
+      //{"pin_id": new ObjectId(pin_id) }
+      {"pin_id": pin_id }
     ).toArray(function(err, results) {
       if (err) throw err;
       res.send(results);
@@ -261,7 +262,11 @@ router.get('/get-comments-pin', (req, res) => {
 router.post('/add-comment', (req, res) => {
   mongo.connect(dbUrl, function(err, db) {
     if (err) throw err;
-    var comment = {username: req.body.username, pin_id: req.body.pin_id, text: req.body.text};
+    var comment = {
+      username: req.body.username,
+      pin_id: req.body.pin_id,
+      text: req.body.text
+    };
     db.collection("comments").insert(
       comment,
       function (err, doc) {
@@ -269,7 +274,7 @@ router.post('/add-comment', (req, res) => {
         res.json({
           success: true,
           message: 'Comment added!',
-          pin: comment
+          comment: comment
         });
       }
     );
@@ -277,4 +282,6 @@ router.post('/add-comment', (req, res) => {
 })
 
 module.exports = router;
+
+// "_id": "58e51c2aed6dbacd51a2994e"
 
