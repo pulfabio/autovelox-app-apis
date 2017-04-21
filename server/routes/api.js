@@ -130,7 +130,7 @@ router.get('/get-pins', (req, res) => {
   mongo.connect(dbUrl, function(err, db) {
     var latitude = parseFloat(req.query.latitude);
     var longitude = parseFloat(req.query.longitude);
-    var distance = req.query.distance;
+    var distance = parseFloat(req.query.distance);
 
     if (!distance) {
       distance = 0.0400;
