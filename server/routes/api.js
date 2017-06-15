@@ -150,10 +150,10 @@ router.get('/get-pins', (req, res) => {
       if (err) throw err;
 
       //Calculate distance of each radar-pin from user
-      results = results.map(function(pin) {
-        pin.distance = calcDist(latitude, longitude, pin.latitude, pin.longitude);
-        return pin;
-      });
+      // results = results.map(function(pin) {
+      //   pin.distance = calcDist(latitude, longitude, pin.latitude, pin.longitude);
+      //   return pin;
+      // });
 
       res.send(results);
       db.close();
@@ -228,6 +228,27 @@ router.post('/add-pin', (req, res) => {
   })
 })
 
+//Real update-pin route
+router.post('/update-pin', (req, res) => {
+  mongo.connect(dbUrl, function(err, db) {
+    if (err) throw err;
+    var pin_id = req.body.pin_id;
+    var type = req.body.type;
+    var distance = req.body.distance;
+    db.collection("pins").update(
+      { "_id": new ObjectId(pin_id) },
+      { $set: { "type": type, "distance": distance } },
+      function (err, doc) {
+        if (err) throw err;
+        res.json({
+          success: true,
+          message: 'Pin updated!'
+        });
+      }
+    );
+  })
+})
+
 //Real get-comments-username route
 router.get('/get-comments-username', (req, res) => {
   mongo.connect(dbUrl, function(err, db) {
@@ -283,5 +304,17 @@ router.post('/add-comment', (req, res) => {
 
 module.exports = router;
 
-// "_id": "58e51c2aed6dbacd51a2994e"
+//test update-pin
+// {
+//   "_id": "58e51c2aed6dbacd51a2994e",
+//   "id": 1,
+//   "type": "radar",
+//   "latitude": 45.408754,
+//   "longitude": 11.88222,
+//   "date": "24/03/2017",
+//   "time": "17:18",
+//   "username": "miki01",
+//   "speed": "80",
+//   "distance": 2247.2778823696917
+// }
 
