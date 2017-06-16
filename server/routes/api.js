@@ -205,13 +205,13 @@ router.post('/add-pin', (req, res) => {
   mongo.connect(dbUrl, function(err, db) {
     if (err) throw err;
     var pin = {
-      latitude: req.body.latitude,
-      longitude: req.body.longitude,
+      latitude: parseFloat(req.body.latitude),
+      longitude: parseFloat(req.body.longitude),
       type: req.body.type,
       date: req.body.date,
       time: req.body.time,
       username: req.body.username,
-      distance: req.body.distance,
+      distance: parseInt(req.body.distance),
       speed: req.body.speed
     };
     db.collection("pins").insert(
@@ -234,7 +234,7 @@ router.post('/update-pin', (req, res) => {
     if (err) throw err;
     var pin_id = req.body.pin_id;
     var type = req.body.type;
-    var distance = req.body.distance;
+    var distance = parseInt(req.body.distance);
     db.collection("pins").update(
       { "_id": new ObjectId(pin_id) },
       { $set: { "type": type, "distance": distance } },
@@ -304,17 +304,6 @@ router.post('/add-comment', (req, res) => {
 
 module.exports = router;
 
-//test update-pin
-// {
-//   "_id": "58e51c2aed6dbacd51a2994e",
-//   "id": 1,
-//   "type": "radar",
-//   "latitude": 45.408754,
-//   "longitude": 11.88222,
-//   "date": "24/03/2017",
-//   "time": "17:18",
-//   "username": "miki01",
-//   "speed": "80",
-//   "distance": 2247.2778823696917
-// }
+
+
 
